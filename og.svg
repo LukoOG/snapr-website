@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f3efe6"/>
+  <g transform="translate(80 70)">
+    <rect x="0" y="0" width="22" height="22" fill="none" stroke="#1b1a17" stroke-width="3"/>
+    <rect x="11" y="11" width="22" height="22" fill="#b8321b"/>
+    <text x="50" y="27" font-family="Menlo, Consolas, monospace" font-size="30" font-weight="700" fill="#1b1a17">snapr</text>
+  </g>
+  <text x="80" y="220" font-family="Palatino, 'Palatino Linotype', Georgia, serif" font-size="74" fill="#1b1a17">Keep every state of your project.</text>
+  <text x="80" y="306" font-family="Palatino, 'Palatino Linotype', Georgia, serif" font-size="74" fill="#625d52">Go back to any of them.</text>
+  <g transform="translate(80 380)" font-family="Menlo, Consolas, monospace">
+    <rect x="0" y="0" width="1040" height="170" fill="#ebe6da" stroke="#1b1a17" stroke-width="3"/>
+    <line x1="347" y1="0" x2="347" y2="170" stroke="#1b1a17" stroke-width="3"/>
+    <line x1="694" y1="0" x2="694" y2="170" stroke="#1b1a17" stroke-width="3"/>
+    <text x="26" y="52" font-size="34" font-weight="700" fill="#1b1a17">#1</text>
+    <text x="373" y="52" font-size="34" font-weight="700" fill="#1b1a17">#2</text>
+    <text x="720" y="52" font-size="34" font-weight="700" fill="#b8321b">#3</text>
+    <g fill="#b8321b" stroke="#b8321b" stroke-width="3">
+      <rect x="26" y="96" width="30" height="30"/><rect x="66" y="96" width="30" height="30"/><rect x="106" y="96" width="30" height="30"/>
+      <rect x="146" y="96" width="30" height="30"/><rect x="186" y="96" width="30" height="30"/><rect x="226" y="96" width="30" height="30"/>
+      <rect x="533" y="96" width="30" height="30"/><rect x="573" y="96" width="30" height="30"/><rect x="613" y="96" width="30" height="30"/>
+      <rect x="920" y="96" width="30" height="30"/>
+    </g>
+    <g fill="none" stroke="#1b1a17" stroke-width="3">
+      <rect x="373" y="96" width="30" height="30"/><rect x="413" y="96" width="30" height="30"/><rect x="453" y="96" width="30" height="30"/><rect x="493" y="96" width="30" height="30"/>
+      <rect x="720" y="96" width="30" height="30"/><rect x="760" y="96" width="30" height="30"/><rect x="800" y="96" width="30" height="30"/><rect x="840" y="96" width="30" height="30"/><rect x="880" y="96" width="30" height="30"/>
+    </g>
+  </g>
+</svg>

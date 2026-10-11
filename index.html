@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Snapr — Keep every state of your project</title>
+  <meta name="description" content="Snapr saves snapshots of a project folder so you can see what changed, return to an earlier version of your files, and keep history without storing unchanged data again. Open source, command-line, written in Rust.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f3efe6" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#151411" media="(prefers-color-scheme: dark)">
+
+  <!-- Social preview. Replace the two relative URLs with absolute ones once the site has an address. -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Snapr — Keep every state of your project">
+  <meta property="og:description" content="Save snapshots of a project folder, return to any earlier version, and store unchanged data only once.">
+  <meta property="og:image" content="og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Snapr: keep every state of your project. Three snapshot frames, each showing which pieces of data were newly stored and which were reused.">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap bar">
+      <a class="brand" href="#top" aria-label="Snapr, back to top">
+        <svg class="mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <rect x="2.5" y="2.5" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="8.5" y="8.5" width="13" height="13" class="mark-front"/>
+        </svg>
+        <span>snapr</span>
+      </a>
+      <nav aria-label="Sections">
+        <ul>
+          <li class="nav-extra"><a href="#why">Why</a></li>
+          <li class="nav-extra"><a href="#features">What it does</a></li>
+          <li class="nav-extra"><a href="#demo">Demo</a></li>
+          <li class="nav-extra"><a href="#how">How it works</a></li>
+          <li><a href="#start">Get started</a></li>
+          <li><a href="https://github.com/LukoOG/Snapr">GitHub</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ───────────── Hero ───────────── -->
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="wrap">
+        <p class="eyebrow">Version 0.1.0 · Open source · Command-line tool</p>
+        <h1 id="hero-title">Keep every state of your project. <span class="h1-soft">Go back to any of them.</span></h1>
+        <p class="lede">
+          Snapr saves snapshots of a project folder, exactly as it is. See what changed,
+          return to an earlier version of your files, and check that everything you saved
+          is still intact. Data that didn’t change is stored once, however many snapshots you keep.
+        </p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#start">Get started</a>
+          <a class="btn" href="https://github.com/LukoOG/Snapr">View on GitHub</a>
+        </div>
+        <p class="hero-note">
+          Snapr today is a command-line tool that you build from source. There is no graphical app.
+        </p>
+
+        <figure class="strip" aria-labelledby="strip-caption">
+          <ol class="frames">
+            <li class="frame">
+              <div class="frame-head"><span class="frame-no">#1</span><span class="frame-meta">3 files</span></div>
+              <p class="frame-msg">first cut</p>
+              <p class="frame-from">&nbsp;</p>
+              <div class="chunks" aria-hidden="true">
+                <i class="new"></i><i class="new"></i><i class="new"></i><i class="new"></i><i class="new"></i><i class="new"></i>
+              </div>
+              <p class="frame-foot">6 pieces stored</p>
+            </li>
+            <li class="frame">
+              <div class="frame-head"><span class="frame-no">#2</span><span class="frame-meta">4 files</span></div>
+              <p class="frame-msg">slower intro, first render</p>
+              <p class="frame-from">└─ from #1</p>
+              <div class="chunks" aria-hidden="true">
+                <i></i><i></i><i></i><i></i><i class="new"></i><i class="new"></i><i class="new"></i>
+              </div>
+              <p class="frame-foot">4 reused · 3 stored</p>
+            </li>
+            <li class="frame is-current">
+              <div class="frame-head"><span class="frame-no">#3</span><span class="frame-meta">3 files · current</span></div>
+              <p class="frame-msg">alternate cut</p>
+              <p class="frame-from">└─ from #1</p>
+              <div class="chunks" aria-hidden="true">
+                <i></i><i></i><i></i><i></i><i></i><i class="new"></i>
+              </div>
+              <p class="frame-foot">5 reused · 1 stored</p>
+            </li>
+          </ol>
+          <figcaption id="strip-caption">
+            <span class="legend"><i class="new" aria-hidden="true"></i> stored for this snapshot</span>
+            <span class="legend"><i aria-hidden="true"></i> already stored, reused</span>
+            <span class="legend-text">
+              Three complete states of the sample project from the <a href="#demo">demo below</a>.
+              Their files are made of 19 pieces in total; Snapr stored 10.
+            </span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ───────────── Why ───────────── -->
+    <section class="section" id="why" aria-labelledby="why-title">
+      <div class="wrap">
+        <p class="kicker">01 — Why</p>
+        <h2 id="why-title">A folder only remembers its latest state.</h2>
+        <div class="cols">
+          <div class="prose">
+            <p>
+              When you want to keep an earlier version of a project, the usual answer is to copy the folder.
+              Then copy it again.
+            </p>
+            <ul class="tree" aria-label="A typical set of manual copies">
+              <li>opening-sequence/</li>
+              <li>opening-sequence_v2/</li>
+              <li>opening-sequence_v2_final/</li>
+              <li>opening-sequence_v2_final_REAL/</li>
+            </ul>
+            <p>
+              Every copy stores everything again, including the large files that never changed.
+              Nothing tells you what is different between two copies, going back means moving files
+              around by hand, and you have no way to know whether an old copy is still intact.
+            </p>
+          </div>
+          <div class="prose">
+            <h3>What Snapr does instead</h3>
+            <p>
+              Snapr keeps the history inside the project folder. Each time you save, it records the
+              complete state of the folder with a message you write, and stores only the data it
+              has not seen before.
+            </p>
+            <p>
+              Later you can list those states, compare any two, and put the folder back the way it was.
+            </p>
+            <h3>Who it is for</h3>
+            <p>
+              Snapr is being built for people whose projects are folders of large, changing files:
+              datasets and notebooks, model files, 3D scenes, edits and renders.
+            </p>
+            <p class="plain-note">
+              <strong>Where it stands today:</strong> you need to be comfortable in a terminal to use it.
+              Making Snapr usable without one is a direction for the project, not something that exists yet.
+            </p>
+            <p>
+              Snapr is not a replacement for Git. Git is built for collaborating on source code.
+              Snapr is built for reproducing whole working folders.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── Features ───────────── -->
+    <section class="section" id="features" aria-labelledby="features-title">
+      <div class="wrap">
+        <p class="kicker">02 — What it does</p>
+        <h2 id="features-title">Six things, all in version 0.1.0.</h2>
+        <ul class="features">
+          <li>
+            <h3>Save a recoverable state</h3>
+            <p>One command records every file in the folder as a numbered snapshot with your message. Files that have not changed since the last save are not read again.</p>
+            <code>snapr save "first cut"</code>
+          </li>
+          <li>
+            <h3>See what changed</h3>
+            <p>List the files added, modified, and removed since your last snapshot, or between any two snapshots. Two versions of a file are compared by their contents.</p>
+            <code>snapr status</code> <code>snapr diff 1 2</code>
+          </li>
+          <li>
+            <h3>Return to an earlier version</h3>
+            <p>Put the folder back exactly as it was in any snapshot. Only the files that differ are rewritten, and you can preview the result first.</p>
+            <code>snapr restore 1 --dry-run</code>
+          </li>
+          <li>
+            <h3>Store unchanged data once</h3>
+            <p>Files are stored as pieces. A piece that is already stored is never stored again, whether it comes from the same file, another file, or an older snapshot. Every piece is compressed.</p>
+          </li>
+          <li>
+            <h3>Follow how the project evolved</h3>
+            <p>Each snapshot records the one it was saved from. Go back to an earlier state, continue in a different direction, and both lines of work are kept.</p>
+            <code>snapr history</code>
+          </li>
+          <li>
+            <h3>Check that your history is intact</h3>
+            <p>Snapr re-reads every stored piece that a snapshot depends on and confirms it is present and unaltered. Anything missing or damaged is listed.</p>
+            <code>snapr verify</code>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ───────────── Demo ───────────── -->
+    <section class="section section-tint" id="demo" aria-labelledby="demo-title">
+      <div class="wrap">
+        <p class="kicker">03 — Demo</p>
+        <h2 id="demo-title">A short session, start to finish.</h2>
+        <p class="section-lede">
+          This is unedited output from Snapr 0.1.0, run on a sample project folder: a 9 MB scene file,
+          a 4 MB data file, and a page of notes. The file names are examples.
+        </p>
+
+        <ol class="steps">
+          <li class="step">
+            <div class="step-text">
+              <h3>Save the first state</h3>
+              <p>Start tracking the folder, then save. Everything is new, so everything is stored.</p>
+            </div>
+            <figure class="term">
+<pre tabindex="0"><code><span class="p">$</span> <span class="c">snapr init</span>
+<span class="ok">✓ Initialized Snapr workspace</span>
+
+<span class="p">$</span> <span class="c">snapr save "first cut"</span>
+<span class="ok">✓ Snapshot 1 created</span>
+  "first cut"
+
+<span class="d">────────────────────────────────────────</span>
+
+Workspace
+  Files processed : 3
+  Chunks processed: 6
+  Size of processed files  : 13.20 MB
+
+Object Store
+  New chunks      : 6
+  Reused chunks   : 0
+  Additional Storage : 10.51 MB
+
+Efficiency
+  Chunk reuse     : 0.00%
+  Compression saved : 20.33%
+
+Snapshot complete 📸.</code></pre>
+            </figure>
+          </li>
+
+          <li class="step">
+            <div class="step-text">
+              <h3>Work, then see what changed</h3>
+              <p>More rows were added to the data file, the notes were edited, and a render was added.</p>
+            </div>
+            <figure class="term">
+<pre tabindex="0"><code><span class="p">$</span> <span class="c">snapr status</span>
+Current Workspace Status
+1 added · 2 modified
+
+ Added
+<span class="add">+ renders/frame_0001.exr</span>
+
+ Modified
+<span class="mod">~ data/takes.csv</span>
+<span class="mod">~ notes.md</span></code></pre>
+            </figure>
+          </li>
+
+          <li class="step">
+            <div class="step-text">
+              <h3>Save again</h3>
+              <p>
+                The scene file did not change, so it was not read at all. The data file grew at the end,
+                so its first piece was reused and only the changed piece was stored.
+              </p>
+            </div>
+            <figure class="term">
+<pre tabindex="0"><code><span class="p">$</span> <span class="c">snapr save "slower intro, first render"</span>
+<span class="ok">✓ Snapshot 2 created</span>
+  "slower intro, first render"
+
+<span class="d">────────────────────────────────────────</span>
+
+Workspace
+  Files processed : 4
+  Chunks processed: 4
+  Size of processed files  : 6.83 MB
+
+Object Store
+  New chunks      : 3
+  Reused chunks   : 1
+  Additional Storage : 2.55 MB
+
+Efficiency
+  Chunk reuse     : 25.00%
+  Compression saved : 62.73%
+
+Snapshot complete 📸.</code></pre>
+            </figure>
+          </li>
+
+          <li class="step">
+            <div class="step-text">
+              <h3>Preview going back</h3>
+              <p>
+                A dry run reports what a restore would do and changes nothing.
+                Running the same command without <code>--dry-run</code> performs it.
+              </p>
+            </div>
+            <figure class="term">
+<pre tabindex="0"><code><span class="p">$</span> <span class="c">snapr restore 1 --dry-run</span>
+Restore Preview — Snapshot 1
+
+<span class="d">────────────────────────────────────────</span>
+
+Workspace Changes
+  Would restore : 2 files
+  Would remove: 1 files
+  Unchanged: 1 files
+
+No changes were made to the workspace.</code></pre>
+            </figure>
+          </li>
+
+          <li class="step">
+            <div class="step-text">
+              <h3>Look at the history</h3>
+              <p>
+                After restoring snapshot 1 and saving a different version of the notes, there are
+                two lines of work. Both start from snapshot 1, and both are kept.
+              </p>
+            </div>
+            <figure class="term">
+<pre tabindex="0"><code><span class="p">$</span> <span class="c">snapr history</span>
+Snapshot history (3 snapshots)
+<span class="d">────────────────────────────────────────────────────────────────</span>
+- #3  Oct 11, 8:42 PM
+  alternate cut
+  └─ from #1
+  3 files · 58 B processed
+  +1 chunks · +83 B storage
+
+  #2  Oct 11, 8:42 PM
+  slower intro, first render
+  └─ from #1
+  4 files · 6.83 MB processed
+  +3 chunks · +2.55 MB storage
+
+  #1  Oct 11, 8:42 PM
+  first cut
+  3 files · 13.20 MB processed
+  +6 chunks · +10.51 MB storage
+
+<span class="d">────────────────────────────────────────────────────────────────</span>
+Storage: 13.06 MB
+
+- current snapshot</code></pre>
+            </figure>
+          </li>
+
+          <li class="step">
+            <div class="step-text">
+              <h3>Confirm it is all still there</h3>
+              <p>
+                Three snapshots refer to 19 pieces of data. Ten are unique, and each one is read back,
+                decompressed, and checked.
+              </p>
+            </div>
+            <figure class="term">
+<pre tabindex="0"><code><span class="p">$</span> <span class="c">snapr verify</span>
+<span class="ok">✓ Repository verified</span>
+
+<span class="d">────────────────────────────────────────</span>
+
+Snapshots
+  Checked           : 3
+
+File versions
+  Checked           : 7
+
+Chunks
+  Unique            : 10
+  Referenced        : 19
+  Verified          : 10
+  Issues            : 0
+
+Data
+  Content verified  : 15.83 MB
+
+<span class="ok">✓ No integrity issues found.</span></code></pre>
+            </figure>
+          </li>
+        </ol>
+
+        <p class="fineprint">
+          The sample files were generated for this demonstration: the scene file is random data, which
+          does not compress, and the data file is text, which does. Your results depend on your files.
+          This is an illustration of how Snapr reports its work, not a benchmark.
+        </p>
+      </div>
+    </section>
+
+    <!-- ───────────── How it works ───────────── -->
+    <section class="section" id="how" aria-labelledby="how-title">
+      <div class="wrap">
+        <p class="kicker">04 — How it works</p>
+        <h2 id="how-title">The engineering, in plain terms.</h2>
+        <p class="section-lede">
+          You do not need any of this to use Snapr. It is here for anyone who wants to know what
+          happens to their files.
+        </p>
+
+        <div class="pipeline" role="img" aria-label="A file is split into pieces. Each piece is hashed, compressed, and stored under its hash. A snapshot lists, for each file, the hashes of its pieces in order.">
+          <div class="pipe-stage"><span class="pipe-label">file</span><span class="pipe-box wide">scenes/opening.blend</span></div>
+          <span class="pipe-arrow" aria-hidden="true">→</span>
+          <div class="pipe-stage"><span class="pipe-label">4 MiB pieces</span><span class="pipe-row"><span class="pipe-box"></span><span class="pipe-box"></span><span class="pipe-box short"></span></span></div>
+          <span class="pipe-arrow" aria-hidden="true">→</span>
+          <div class="pipe-stage"><span class="pipe-label">hash · compress</span><span class="pipe-row"><span class="pipe-box hash">hash</span><span class="pipe-box hash">hash</span><span class="pipe-box hash">hash</span></span></div>
+          <span class="pipe-arrow" aria-hidden="true">→</span>
+          <div class="pipe-stage"><span class="pipe-label">stored once</span><span class="pipe-box wide mono">.snapr/objects/</span></div>
+        </div>
+
+        <ol class="how">
+          <li>
+            <h3>Files are split into pieces</h3>
+            <p>Each file is read in pieces of 4 MiB. Engineers call this <em>chunking</em>. A large file is never loaded into memory whole.</p>
+          </li>
+          <li>
+            <h3>Each piece is named by its content</h3>
+            <p>Snapr computes a SHA-256 fingerprint of every piece and stores the piece under that name. This is <em>content-addressed storage</em>: the name says what is inside.</p>
+          </li>
+          <li>
+            <h3>Identical pieces are stored once</h3>
+            <p>If a piece with the same fingerprint is already stored, nothing is written. This <em>deduplication</em> applies within a file, between files, and across every snapshot.</p>
+          </li>
+          <li>
+            <h3>Pieces are compressed</h3>
+            <p>Every stored piece is compressed with Zstandard. How much space that saves depends on the data; media that is already compressed gains little.</p>
+          </li>
+          <li>
+            <h3>A snapshot is a list, not a copy</h3>
+            <p>A snapshot records each file and the fingerprints of its pieces, in order, along with your message, the time, and the snapshot it was saved from. That last link is what lets history split into separate lines.</p>
+          </li>
+          <li>
+            <h3>Verification re-checks everything</h3>
+            <p>Because a piece is named by its fingerprint, Snapr can prove it is intact: read it, decompress it, fingerprint it again, and compare. <code>snapr verify</code> does this for every piece a snapshot uses.</p>
+          </li>
+        </ol>
+
+        <div class="callout">
+          <h3>One limit worth knowing</h3>
+          <p>
+            Pieces are cut at fixed positions. If you insert data near the start of a large file,
+            everything after it shifts, and the rest of that file is stored again. Edits in place
+            and data added at the end reuse well.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── Get started ───────────── -->
+    <section class="section section-tint" id="start" aria-labelledby="start-title">
+      <div class="wrap">
+        <p class="kicker">05 — Get started</p>
+        <h2 id="start-title">Install it and take a first snapshot.</h2>
+
+        <div class="cols start-cols">
+          <div>
+            <h3 class="step-title"><span>1</span> Install</h3>
+            <p>
+              Snapr is built from source. You need <a href="https://git-scm.com/">Git</a> and a recent
+              stable <a href="https://www.rust-lang.org/tools/install">Rust toolchain</a>, version 1.85 or newer.
+            </p>
+            <div class="cmd"><pre><code>git clone https://github.com/LukoOG/Snapr.git</code></pre><button type="button" class="copy" hidden data-copy="git clone https://github.com/LukoOG/Snapr.git">Copy</button></div>
+            <div class="cmd"><pre><code>cd Snapr</code></pre><button type="button" class="copy" hidden data-copy="cd Snapr">Copy</button></div>
+            <div class="cmd"><pre><code>cargo install --path .</code></pre><button type="button" class="copy" hidden data-copy="cargo install --path .">Copy</button></div>
+            <p class="small">This puts the <code>snapr</code> program in Cargo’s bin directory.</p>
+          </div>
+
+          <div>
+            <h3 class="step-title"><span>2</span> Use it</h3>
+            <p>Open a terminal in the top level of your project folder and run every command from there.</p>
+            <div class="cmd"><pre><code>snapr init</code></pre><button type="button" class="copy" hidden data-copy="snapr init">Copy</button></div>
+            <div class="cmd"><pre><code>snapr save "initial"</code></pre><button type="button" class="copy" hidden data-copy='snapr save "initial"'>Copy</button></div>
+            <p class="small">Change some files, then:</p>
+            <div class="cmd"><pre><code>snapr status</code></pre><button type="button" class="copy" hidden data-copy="snapr status">Copy</button></div>
+            <div class="cmd"><pre><code>snapr restore 1 --dry-run</code></pre><button type="button" class="copy" hidden data-copy="snapr restore 1 --dry-run">Copy</button></div>
+          </div>
+        </div>
+
+        <div class="warning" role="note" aria-labelledby="warn-title">
+          <h3 id="warn-title">Before you restore</h3>
+          <p>
+            <code>snapr restore</code> changes your folder without asking for confirmation.
+            Files that differ from the snapshot are overwritten, and files that are not in the snapshot
+            are deleted, including new files you have never saved. Save first if you want to keep your
+            current state, and use <code>--dry-run</code> to see what would happen.
+          </p>
+        </div>
+
+        <div class="cols facts">
+          <div>
+            <h3>All commands</h3>
+            <table>
+              <tbody>
+                <tr><th scope="row"><code>snapr init</code></th><td>Start tracking the current folder.</td></tr>
+                <tr><th scope="row"><code>snapr save &lt;message&gt;</code></th><td>Save a snapshot.</td></tr>
+                <tr><th scope="row"><code>snapr status</code></th><td>Changes since the current snapshot.</td></tr>
+                <tr><th scope="row"><code>snapr diff &lt;old&gt; &lt;new&gt;</code></th><td>Changes between two snapshots.</td></tr>
+                <tr><th scope="row"><code>snapr restore &lt;id&gt;</code></th><td>Return the folder to a snapshot. Add <code>--dry-run</code> to preview, or <code>--force</code> to discard changes made since the current snapshot.</td></tr>
+                <tr><th scope="row"><code>snapr history</code></th><td>List all snapshots.</td></tr>
+                <tr><th scope="row"><code>snapr verify</code></th><td>Check everything stored.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <h3>What to expect from 0.1.0</h3>
+            <ul class="plain">
+              <li>It is a command-line tool. There is no graphical interface.</li>
+              <li>Everything is kept on your machine, in a <code>.snapr</code> folder inside the project.</li>
+              <li>Snapr records the contents of regular files. It does not record permissions, timestamps, symbolic links, or empty folders.</li>
+              <li>Folders named <code>.git</code>, <code>target</code>, and <code>.snapr</code>, and files named <code>.DS_Store</code>, are skipped. This list cannot be changed yet.</li>
+              <li>Snapshots and stored data cannot be deleted yet.</li>
+              <li>Run one Snapr command at a time in a folder.</li>
+            </ul>
+            <p class="small">The full list is in the <a href="https://github.com/LukoOG/Snapr/blob/main/docs/architecture.md#13-known-limitations-of-v1">architecture document</a>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── Docs ───────────── -->
+    <section class="section" id="docs" aria-labelledby="docs-title">
+      <div class="wrap">
+        <p class="kicker">06 — Documentation</p>
+        <h2 id="docs-title">Read how it is built.</h2>
+        <ul class="docs">
+          <li>
+            <a href="https://github.com/LukoOG/Snapr/blob/main/docs/architecture.md">
+              <span class="doc-name">Architecture</span>
+              <span class="doc-desc">Modules, what each command does step by step, and the rules the design relies on.</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/LukoOG/Snapr/blob/main/docs/storage-format.md">
+              <span class="doc-name">Storage format</span>
+              <span class="doc-desc">Exactly what is written to disk, down to the bytes of each stored piece.</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/LukoOG/Snapr/blob/main/docs/verification.md">
+              <span class="doc-name">Verification design</span>
+              <span class="doc-desc">What <code>snapr verify</code> checks, what its numbers mean, and what a passing result proves.</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/LukoOG/Snapr/blob/main/ROADMAP.md">
+              <span class="doc-name">Roadmap</span>
+              <span class="doc-desc">What version 1 does, its known limits, and the directions being considered next.</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ───────────── Closing ───────────── -->
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="wrap">
+        <h2 id="closing-title">Try it on a copy of a project.</h2>
+        <p>
+          Snapr is early, open source, and built in the open. Make a copy of a folder you care about,
+          take a few snapshots, and tell us where it falls short.
+        </p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#start">Get started</a>
+          <a class="btn" href="https://github.com/LukoOG/Snapr">View on GitHub</a>
+          <a class="btn btn-quiet" href="https://github.com/LukoOG/Snapr/issues">Report an issue</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap foot">
+      <p>Snapr 0.1.0 · Licensed under the <a href="https://github.com/LukoOG/Snapr/blob/main/LICENSE">Mozilla Public License 2.0</a></p>
+    </div>
+  </footer>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
